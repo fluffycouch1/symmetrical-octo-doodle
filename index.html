@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Click the Star</title>
+  <style>
+    body {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 16px;
+      font: 18px system-ui, sans-serif;
+      text-align: center;
+    }
+
+    #play-area {
+      position: relative;
+      height: 320px;
+      margin-top: 20px;
+      overflow: hidden;
+      border: 2px solid #555;
+      border-radius: 12px;
+      background: #f3f6ff;
+    }
+
+    #star {
+      position: absolute;
+      display: none;
+      border: 0;
+      background: transparent;
+      font-size: 42px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Click the Star ⭐</h1>
+  <p>Score: <span id="score">0</span> | Time: <span id="time">20</span>s</p>
+  <button id="start">Start game</button>
+
+  <div id="play-area" aria-label="Game area">
+    <button id="star" aria-label="Click the star">⭐</button>
+  </div>
+
+  <script>
+    const area = document.querySelector("#play-area");
+    const star = document.querySelector("#star");
+    const scoreDisplay = document.querySelector("#score");
+    const timeDisplay = document.querySelector("#time");
+    const startButton = document.querySelector("#start");
+
+    let score = 0;
+    let timeLeft = 20;
+    let timer;
+
+    function moveStar() {
+      const maxX = area.clientWidth - star.offsetWidth;
+      const maxY = area.clientHeight - star.offsetHeight;
+      star.style.left = `${Math.random() * maxX}px`;
+      star.style.top = `${Math.random() * maxY}px`;
+    }
+
+    startButton.addEventListener("click", () => {
+      clearInterval(timer);
+      score = 0;
+      timeLeft = 20;
+      scoreDisplay.textContent = score;
+      timeDisplay.textContent = timeLeft;
+      star.style.display = "block";
+      startButton.disabled = true;
+      moveStar();
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timeDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          star.style.display = "none";
+          startButton.disabled = false;
+          startButton.textContent = `Play again (score: ${score})`;
+        }
+      }, 1000);
+    });
+
+    star.addEventListener("click", () => {
+      score++;
+      scoreDisplay.textContent = score;
+      moveStar();
+    });
+  </script>
+</body>
+</html>
